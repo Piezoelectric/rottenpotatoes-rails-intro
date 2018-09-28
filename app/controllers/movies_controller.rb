@@ -10,8 +10,16 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
-  def index
-    @movies = Movie.all
+  def index()
+    printf(params[:sortBy].to_s)
+    if ["title", "release_date"].include? params[:sortBy]
+      @hiliteCol = params[:sortBy]
+      printf(@hiliteCol)
+      @movies = Movie.order(params[:sortBy])
+    else
+      printf("no sort")
+      @movies = Movie.all
+    end
   end
 
   def new
