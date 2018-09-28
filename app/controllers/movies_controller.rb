@@ -27,12 +27,13 @@ class MoviesController < ApplicationController
     if ["title", "release_date"].include? params[:sortBy]
       sortCriteria = params[:sortBy]
       print("sort on " + params[:sortBy].to_s + "\n")
-      @hiliteCol = params[:sortBy]
     else
       printf("no sort\n")
       sortCriteria = ""
     end
     
+    @hiliteCol = sortCriteria
+    @ratings = selectedRatings
     @movies = Movie.where({rating: selectedRatings}).order(sortCriteria)
     
   end
