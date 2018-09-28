@@ -11,15 +11,30 @@ class MoviesController < ApplicationController
   end
 
   def index()
-    printf(params[:sortBy].to_s)
-    if ["title", "release_date"].include? params[:sortBy]
-      @hiliteCol = params[:sortBy]
-      printf(@hiliteCol)
-      @movies = Movie.order(params[:sortBy])
-    else
-      printf("no sort")
-      @movies = Movie.all
+    # filter by rating -- init @all_ratings, get params[:ratings] from view
+    @all_ratings = Movie.uniq.pluck(:rating)
+    if params[:ratings]
+      selectedRatings = params[:ratings].keys
+      session[:ratings] = params[:ratings] #have session use new user-inpt value
+      printf("filter: " + @ratings.to_s + "\n")
+    else #no ratings input
+      selectedRatings = session[:ratings].keys
+      printf("no filter\n")
     end
+    
+    # sort movies by columns -- set @movies for data, @hiliteCol for styling col header,
+    # get params[:sortBy] from view
+    if ["title", "release_date"].include? params[:sortBy]
+      sortCriteria = params[:sortBy]
+      print("sort on " + params[:sortBy].to_s + "\n")
+      @hiliteCol = params[:sortBy]
+    else
+      printf("no sort\n")
+      sortCriteria = ""
+    end
+    
+    @movies = Movie.where({rating: selectedRatings}).order(sortCriteria)
+    
   end
 
   def new
